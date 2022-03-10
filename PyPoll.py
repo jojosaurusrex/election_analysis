@@ -14,6 +14,7 @@
 #add our dependencies
 import os
 import csv
+#from turtle import clear
 
 #declaring the csv file and since this script is in the same folder they are considered on the same level so no path directory needed
 #Example of path directory: Resources\election_results.csv This means it is down a level
@@ -34,7 +35,7 @@ import csv
 file_to_load = os.path.join("test","election_analysis","election_results.csv")
 
 # Assign a variable to save the file to a path.
-file_to_save = os.path.join("analysis","election_analysis.txt")
+file_to_save = os.path.join("test","election_analysis","analysis","election_analysis.txt")
 
 #intiialize total vote counter
 total_votes = 0 #why place it here
@@ -74,25 +75,48 @@ with open(file_to_load) as election_data:
         # Add a vote to that candidate's count.
         candidate_votes[candidate_name] += 1
 
+
+    # Save the results to our text file.
+with open(file_to_save, "w") as txt_file:
+    # Print the final vote count to the terminal.
+    election_results = (
+        f"\nElection Results\n"
+        f"-------------------------\n"
+        f"Total Votes: {total_votes:,}\n"
+        f"-------------------------\n")
+
+    print(election_results, end="")
+    # Save the final vote count to the text file.
+    txt_file.write(election_results)
+
     for candidate_name in candidate_votes:
         
         votes = candidate_votes[candidate_name]
         vote_percentage = (float(votes) / float(total_votes))*100
-        print(f"{candidate_name}: received {vote_percentage:.1f}% ({votes:,})\n")
+        candidate_results = (f"{candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
+        
+        print(candidate_results)
+        
+         #  Save the candidate results to our text file.
+        txt_file.write(candidate_results)
 
         if (votes > winning_count) and (vote_percentage > winning_percentage):
             winning_count = votes
             winning_percentage = vote_percentage
             winning_candidate = candidate_name
 
+
             winning_candidate_summary = (
-            f"-------------------------\n"
-            f"Winner: {winning_candidate}\n"
-            f"Winning Vote Count: {winning_count:,}\n"
-            f"Winning Percentage: {winning_percentage:.1f}%\n"
-            f"-------------------------\n")
-            
+                f"-------------------------\n"
+                f"Winner: {winning_candidate}\n"
+                f"Winning Vote Count: {winning_count:,}\n"
+                f"Winning Percentage: {winning_percentage:.1f}%\n"
+                f"-------------------------\n")
+
     print(winning_candidate_summary)
+
+    #Save the winning candidate's results to the text file.
+    txt_file.write(winning_candidate_summary) 
 
 
     
@@ -133,3 +157,4 @@ with open(file_to_load) as election_data:
 #close File
 #election_data.close()
 
+# Using panda instead of for loops look for other options
